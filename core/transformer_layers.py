@@ -25,15 +25,7 @@ class PositionalEncoding(nn.Module):
         assert embed_dim % 2 == 0
         # create an array with a "batch dimension" of 1 (which will broadcast across all examples in the batch)
         pe = torch.zeros(1, max_len, embed_dim)
-        ############################################################################
-        # TODO: Construct the positional encoding array as described in            #
-        # Transformer_Captioning.ipynb.  The goal is for each row to alternate     #
-        # sine and cosine, and have exponents of 0, 0, 2, 2, 4, 4, etc. up to      #
-        # embed_dim. Of course this exact specification is somewhat arbitrary, but #
-        # this is what the autograder is expecting. For reference, our solution is #
-        # less than 5 lines of code.                                               #
-        ############################################################################
-        # Get col idx range (i) and powers
+      
         i = torch.arange(max_len)[:, None]
         pows = torch.pow(10000, -torch.arange(0, embed_dim, 2) / embed_dim)
 
