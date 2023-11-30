@@ -159,34 +159,34 @@ class CaptioningRNN:
         
     
     def sample(self, features, max_length=30):
-      N = features.shape[0]
-      captions = self._null * np.ones((N, max_length), dtype=np.int32)
+        N = features.shape[0]
+        captions = self._null * np.ones((N, max_length), dtype=np.int32)
 
-      # unpack parameters
-      W_proj, b_proj = self.params["W_proj"], self.params["b_proj"]
-      W_embed = self.params["W_embed"]
-      Wx, Wh, b = self.params["Wx"], self.params["Wh"], self.params["b"]
-      W_vocab, b_vocab = self.params["W_vocab"], self.params["b_vocab"]
+        # unpack parameters
+        W_proj, b_proj = self.params["W_proj"], self.params["b_proj"]
+        W_embed = self.params["W_embed"]
+        Wx, Wh, b = self.params["Wx"], self.params["Wh"], self.params["b"]
+        W_vocab, b_vocab = self.params["W_vocab"], self.params["b_vocab"]
 
-      # initialize the hidden and cell states, input
-      h, _ = affine_forward(features, W_proj, b_proj)
-      x = np.repeat(self._start, N)
-      c = np.zeros_like(h)
+        # initialize the hidden and cell states, input
+        h, _ = affine_forward(features, W_proj, b_proj)
+        x = np.repeat(self._start, N)
+        c = np.zeros_like(h)
 
-      for t in range(max_length):
-          # generate the word embedding of a previous word
-          x, _ = word_embedding_forward(x, W_embed)
+        for t in range(max_length):
+            # generate the word embedding of a previous word
+            x, _ = word_embedding_forward(x, W_embed)
 
-          if self.cell_type == "rnn":
-              # if cell type is regular RNN
-              h, _ = rnn_step_forward(x, h, Wx, Wh, b)
-          elif self.cell_type == "lstm":
-              # if cell type is long short-term memory
-              h, c, _ = lstm_step_forward(x, h, c, Wx, Wh, b)
+            if self.cell_type == "rnn":
+                # if cell type is regular RNN
+                h, _ = rnn_step_forward(x, h, Wx, Wh, b)
+            elif self.cell_type == "lstm":
+                # if cell type is long short-term memory
+                h, c, _ = lstm_step_forward(x, h, c, Wx, Wh, b)
 
-          # compue the final forward pass for t to get scores
-          out, _ = affine_forward(h, W_vocab, b_vocab)
-          x = np.argmax(out, axis=1)
-          captions[:, t] = x
+            # compue the final forward pass for t to get scores
+            out, _ = affine_forward(h, W_vocab, b_vocab)
+            x = np.argmax(out, axis=1)
+            captions[:, t] = x
 
-      return captions
+        return captions
