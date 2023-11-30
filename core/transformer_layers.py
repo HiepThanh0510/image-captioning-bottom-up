@@ -3,9 +3,12 @@ import torch.nn as nn
 from torch.nn import functional as F
 import math
 
-"""
-This file defines layer types that are commonly used for transformers.
-"""
+#-------------------------------------------------------------------------#
+# this file defines layer types that are commonly used for transformers.  #
+# - PositionalEncoding                                                    #
+# - MultiheadAttention                                                    #
+#-------------------------------------------------------------------------#
+
 
 class PositionalEncoding(nn.Module):
     """
@@ -25,16 +28,16 @@ class PositionalEncoding(nn.Module):
         assert embed_dim % 2 == 0
         # create an array with a "batch dimension" of 1 (which will broadcast across all examples in the batch)
         pe = torch.zeros(1, max_len, embed_dim)
-      
+        
+        # get col idx range (i) and powers
         i = torch.arange(max_len)[:, None]
         pows = torch.pow(10000, -torch.arange(0, embed_dim, 2) / embed_dim)
 
-        # Compute positional values sin/cos
+        # compute positional values sin/cos
         pe[0, :, 0::2] = torch.sin(i * pows)
         pe[0, :, 1::2] = torch.cos(i * pows)
 
-        # Make sure the positional encodings will be saved with the model
-        # parameters (mostly for completeness).
+        # make sure the positional encodings will be saved with the model parameters (mostly for completeness).
         self.register_buffer('pe', pe)
 
     def forward(self, x):
@@ -127,13 +130,13 @@ class MultiHeadAttention(nn.Module):
         
         """         
         step-by-step                                                            
-          1) You'll want to split your shape from (N, T, E) into (N, T, H, E/H),  
+          1) you'll want to split your shape from (N, T, E) into (N, T, H, E/H),  
               where H is the number of heads.                                      
-          2) The function torch.matmul allows you to do a batched matrix multiply.
+          2) the function torch.matmul allows you to do a batched matrix multiply.
               For example, you can do (N, H, T, E/H) by (N, H, E/H, T) to yield a  
               shape (N, H, T, T). For more examples, see                           
               https://pytorch.org/docs/stable/generated/torch.matmul.html          
-          3) For applying attn_mask, think how the scores should be modified to   
+          3) for applying attn_mask, think how the scores should be modified to   
               prevent a value from influencing output. Specifically, the PyTorch   
               function masked_fill may come in handy.                              
         """        
@@ -149,7 +152,7 @@ class MultiHeadAttention(nn.Module):
         Y = Q @ K.transpose(2, 3) / self.scale
 
         if attn_mask is not None:
-            # Ensure small probabilities in softmax
+            # ensure small probabilities in softmax
             Y = Y.masked_fill(attn_mask==0, float("-inf"))
       
         # (N,H,S,T) @ (N,H,T,D/H) -> (N,H,S,D/H)
