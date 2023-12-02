@@ -6,8 +6,7 @@
 
 ## 2. Concepts
 + __Encoder-Decoder architecture__. Typically, a model that generates sequences will use an Encoder to encode the input into a fixed form and a Decoder to decode it, word by word, into a sequence.
-+ __Transfer Learning__. This is when you borrow from an existing model by using parts of it in a new model. This is almost always better than training a new model from scratch (i.e., knowing nothing). As you will see, you can always fine-tune this second-hand knowledge to the specific task at hand. Using pretrained word embeddings is a dumb but valid example. For our image captioning problem, we will use a pretrained Encoder, and then fine-tune it as needed.
-+ In terms of the encoder, I use a pretrained VGG16 to extract features from the input images into a vector of dimension 4096. After that, I reduce the dimensionality to 512 using PCA (Principal Component Analysis).
++ In terms of the encoder, I use a pretrained VGG16 to extract features from the input images into a vector of dimension 4096. After that, I reduce the dimensionality to 512 using PCA (Principal Component Analysis). Please take a look at the features_extractions.py for a clearer understanding of the feature extraction process. To apply the PCA technique and reduce the dimensionality to 512, the minimum batch size of your images should be 512. As the goal of this project is focused on building a decoder, I utilize preprocessed features from the COCO dataset. 
 + For the decoder, I build RNN, LSTM, and Transformer from scratch. Why do I do this? Because I want to have a detailed understanding of and insights into the architectures that have been and are making waves in AI in general and NLP in particular.
 ## 3. Setup
 
