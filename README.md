@@ -53,15 +53,30 @@ And below is my folder hierarchy:
 ## 4. Usage
 ### Training
 ```python
-# model options: rnn/lstm/transformer
 python training.py --model "transformer" --num_samples 10000 
 ```
 ### Inference
 ```python
-# model options: rnn/lstm/transformer
 python inference.py --model "transformer" --num_samples 10000
 ```
 
-## 5. Experiments
+## 5. Overfit RNN/LSTM/Transformer Captioning Model on Small Data
++ Training 
 
-## 6. References
+  ```python
+  python training.py --model "rnn" --num_samples 300
+  ```
++ Loss: yayyy, it works 😄 
+
+     ![loss](images/loss_rnn.png)
+
++ Inference: 
+  ```python
+  python inference.py --model "rnn"
+  ```
++ Result: 
+  
+    ![infer](images/train_1.png)
+    ![infer](images/val_1.png)
+## 6. Conclusion
+For the project's goal of building a decoder from scratch, in order to assess its feasibility, I only trained on a small dataset to see if it performs well, and yay, it worked fine. If you want to increase the overall capacity of the model, you can increase the num_samples parameter (in this project, the maximum value is 400,145).
